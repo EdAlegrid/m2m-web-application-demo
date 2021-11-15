@@ -1,15 +1,19 @@
-### node-m2m-web-application-demo
+# m2m web-application demo
 
 ![](https://raw.githubusercontent.com/EdoLabs/src2/master/quicktour4.svg?sanitize=true)
 [](quicktour.svg)
 
-In this quick tour, we will install two push-button switches ( GPIO pin 11 and 13 ) on the remote client, and an led actuator ( GPIO pin 33 ) on the remote device.
+This is a quick demo on how to integrate *m2m* into your web application project. It also demonstrates how *m2m* can easily break up your application using a microservices architecture pattern.
 
-The client will attempt to turn *on* and *off* the remote device's actuator and receive a confirmation response of *true* to signify the actuator was indeed turned **on** and *false* when the actuator is turned **off**.
+The demo consists of a simple front-end setup using fetch() and a back-end server using node.js and express.
 
-The client will also show an on/off response times providing some insight on the responsiveness of the remote control system.     
+The back-end server can be hosted from any computers - Linux, Windows or Mac. The server acting as *m2m* client will then access and communicate with the remote devices - *device1* and *device2*.
 
-#### Remote Device Setup
+The remote devices ideally should be a Raspberry Pi device. However if you don't have any, you can just use any computers - Linux or Windows as replacement.
+
+## Option1 - Remote Devices Setup using Raspberry Pi with Led Actuator
+##### On both devices, install an led actuator on pin 33 and 35.
+#### Remote Device1
 
 ##### 1. Create a device project directory and install m2m and array-gpio inside the directory.
 ```js
@@ -20,64 +24,133 @@ $ npm install m2m array-gpio
 ```js
 const { Device } = require('m2m');
 
-let device = new Device(200);
+let device = new Device(100);
 
-device.connect(() => {
-  device.setGpio({mode:'output', pin:33});
+let myData = 'myData';
+
+device.connect('https://dev.node-m2m.com', () => {
+
+  device.setGpio({mode:'output', pin:[33, 35]});
+
+  device.setData('get-data', (data) => {
+    data.send(myData);
+  });
+
+  device.setData('send-data', (data) => {
+    if(data.payload){
+      myData = data.payload;
+      data.send(data.payload);
+    }
+  });
+
+  // error listener
+  device.on('error', (err) => console.log('error:', err))
 });
 ```
-
 ##### 3. Start your device application.
 ```js
 $ node device.js
 ```
-#### Remote Client Setup
+#### Remote Device2
 
-##### 1. Create a client project directory and install m2m and array-gpio.
+##### 1. Create a device project directory and install m2m and array-gpio inside the directory.
 ```js
 $ npm install m2m array-gpio
 ```
-##### 2. Save the code below as client.js in your client project directory.
+##### 2. Save the code below as device.js in your device project directory.
 
 ```js
-const { Client } = require('m2m');
-const { setInput } = require('array-gpio');
+const { Device } = require('m2m');
 
-let sw1 = setInput(11); // ON switch
-let sw2 = setInput(13); // OFF switch
+const device = new Device(200);
 
-let client = new Client();
-
-client.connect(() => {
-
-  let t1 = null;
-  let device = client.accessDevice(200);
-
-  sw1.watch(1, (state) => {
-    if(state){
-      t1 = new Date();
-      console.log('turning ON remote actuator');
-      device.output(33).on((data) => {
-        let t2 = new Date();
-        console.log('ON confirmation', data, 'response time', t2 - t1, 'ms');
-      });
-    }
-  });
-
-  sw2.watch(1, (state) => {
-    if(state){
-      t1 = new Date();
-      console.log('turning OFF remote actuator');
-      device.output(33).off((data) => {
-        let t2 = new Date();
-        console.log('OFF confirmation', data, 'response time', t2 - t1, 'ms');
-      });
-    }
-  });
+device.connect('https://dev.node-m2m.com', () => {
+  device.setGpio({mode:'out', pin:[33, 35]}, gpio => console.log(gpio.pin, gpio.state));
 });
 ```
-##### 3. Start your application.
+##### 3. Start your device application.
 ```js
-$ node client.js
+$ node device.js
 ```
-The led actuator from remote device should toggle on and off as you press the corresponding ON/OFF switches from the client.
+## Option2 - Remote Devices Setup using Windows or Linux
+#### Remote Device1
+##### Here, we don't need to install array-gpio instead the gpio output will run in simulation mode. 
+##### 1. Create a device project directory and install m2m inside the directory.
+```js
+$ npm install m2m
+```
+##### 2. Save the code below as device.js in your device project directory.
+
+```js
+const { Device } = require('m2m');
+
+let device = new Device(100);
+
+let myData = 'myData';
+
+device.connect('https://dev.node-m2m.com', () => {
+
+  device.setGpio({mode:'output', pin:[33, 35] type:'simulation'});
+
+  device.setData('get-data', (data) => {
+    data.send(myData);
+  });
+
+  device.setData('send-data', (data) => {
+    if(data.payload){
+      myData = data.payload;
+      data.send(data.payload);
+    }
+  });
+
+  // error listener
+  device.on('error', (err) => console.log('error:', err))
+});
+```
+##### 3. Start your device application.
+```js
+$ node device.js
+```
+#### Remote Device2
+
+##### 1. Create a device project directory and install m2m inside the directory.
+```js
+$ npm install m2m
+```
+##### 2. Save the code below as device.js in your device project directory.
+
+```js
+const { Device } = require('m2m');
+
+const device = new Device(200);
+
+device.connect('https://dev.node-m2m.com', () => {
+  device.setGpio({mode:'out', pin:[33, 35], type:'simulation'}, gpio => console.log(gpio.pin, gpio.state));
+});
+```
+##### 3. Start your device application.
+```js
+$ node device.js
+```
+
+## Web Application Setup
+
+##### 1. Download the *m2m-web-application-demo* project from *GitHub*.
+```js
+$ git clone https://github.com/EdAlegrid/m2m-web-application-demo.git
+```
+##### 2. Install all node dependencies inside *m2m-web-application-demo* directory.
+```js
+$ cd m2m-web-application-demo
+```
+```js
+$ npm install
+```
+##### 3. Start the web application server.
+```js
+$ node app
+```
+##### 4. Open a browser tab.
+`http://127.0.0.1:4000`
+
+The web application page should show the various sections with control buttons to try out how *m2m* communicates with the remote devices to control gpio outputs and access data.
