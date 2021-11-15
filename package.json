@@ -1,0 +1,40 @@
+{
+  "name": "m2m web-application",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "dependencies": {
+    "express": "~4.17.1",
+    "m2m": "^1.8.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.15"
+  },
+  "m2mConfig": {
+    "code": {
+      "allow": true,
+      "filename": "app.js"
+    }
+  },
+  "nodemonConfig": {
+    "delay": "2000",
+    "verbose": true,
+    "restartable": "rs",
+    "ignore": [
+      ".git",
+      "public"
+    ],
+    "ignoreRoot": [
+      ".git",
+      "public"
+    ],
+    "execMap": {
+      "js": "node"
+    },
+    "watch": [
+      "node_modules/m2m/mon"
+    ],
+    "ext": "js,json"
+  }
+}
