@@ -5,15 +5,15 @@
 
 This is a quick demo on how to integrate *m2m* into your web application project. It also demonstrates how *m2m* can easily break up your application using a microservices architecture pattern.
 
-The demo consists of a simple front-end setup using fetch() and a back-end server using node.js and express.
+The demo consists of a simple front-end setup using fetch() and a back-end server using node and express.
 
 The back-end server can be hosted from any computers - Linux, Windows or Mac. The server acting as *m2m* client will then access and communicate with the remote devices - *device1* and *device2*.
 
 The remote devices ideally should be a Raspberry Pi device. However if you don't have any, you can just use any computers - Linux or Windows as replacement.
 
 ## Option1 - Remote Devices Setup using Raspberry Pi with Led Actuator
-##### On both devices, install an led actuator on pin 33 and 35.
-#### Remote Device1
+On both devices, install an led actuator on pin 33 and 35.
+Remote Device1
 
 ##### 1. Create a device project directory and install m2m and array-gpio inside the directory.
 ```js
@@ -74,7 +74,7 @@ $ node device.js
 ```
 ## Option2 - Remote Devices Setup using Windows or Linux
 #### Remote Device1
-##### Here, we don't need to install array-gpio instead the gpio output will run in simulation mode. 
+##### Here, we don't need to install array-gpio instead the gpio output will run in simulation mode.
 ##### 1. Create a device project directory and install m2m inside the directory.
 ```js
 $ npm install m2m
@@ -90,7 +90,7 @@ let myData = 'myData';
 
 device.connect('https://dev.node-m2m.com', () => {
 
-  device.setGpio({mode:'output', pin:[33, 35] type:'simulation'});
+  device.setGpio({mode:'output', pin:[33, 35], type:'simulation'});
 
   device.setData('get-data', (data) => {
     data.send(myData);
