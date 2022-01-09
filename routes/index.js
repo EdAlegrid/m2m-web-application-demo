@@ -6,6 +6,7 @@ var client = require('../m2m/client.js');
 router.get('/device-on', function(req, res) {
   console.log('device-on');
   client.output(100, 33).on();
+  client.output(100, 35).on();
   client.output(200, 33).on();
   client.output(200, 35).on();
   res.json({status:true});
@@ -15,6 +16,7 @@ router.get('/device-on', function(req, res) {
 router.get('/device-off', function(req, res) {
   console.log('device-off');
   client.output(100, 33).off();
+  client.output(100, 35).off();
   client.output(200, 33).off();
   client.output(200, 35).off();
   res.json({status:false});
