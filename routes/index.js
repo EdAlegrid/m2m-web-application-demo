@@ -38,7 +38,7 @@ router.post('/device-toggle', function(req, res) {
     res.json({status:true});
   }
   else{
-  deviceOff();
+    deviceOff();
     res.json({status:false});
   }  
 });
