@@ -12,7 +12,6 @@
     <!-- Custom styles for this template -->
     <link href="headers.css" rel="stylesheet">
 
-    <!--<script src="../assets/dist/js/bootstrap.bundle.min.js"></script>-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
   </head>
@@ -118,8 +117,8 @@
             <div class="col-6">
               <form class="row g-3">
                 <div class="col-auto">
-                  <label for="input-value" class="visually-hidden">Enter value</label>
-                  <input id="input-value" type="text" class="form-control"  placeholder="Enter value">
+                  <label for="send-input-value" class="visually-hidden">Enter value</label>
+                  <input id="send-input-value" type="text" class="form-control"  placeholder="Enter value">
                 </div>
                 <div class="col-auto">
                   <button id="send-data" style="width:200px;" type="button" class="btn btn-primary mb-0">Send data</button>
@@ -142,9 +141,9 @@
 
   <script>
   
-  var remoteDevice = {id:100, pin:33, state:true};
   var device1 = {id:200, pin:33, state:true};
-  var device2 = {id:200, pin:35, state:false};  
+  var device2 = {id:200, pin:35, state:false}; 
+  var remoteDevice = {id:100, pin:33, state:true}; 
 
   if(document.getElementById("deviceOn")){
     document.getElementById("deviceOn").onclick = deviceOn;
@@ -200,86 +199,84 @@
     }
   }
 
-  function deviceOn(){
-    console.log('deviceOn');
-    fetch("/device-on", {
+  function getFetch(path, msg, cb){
+    console.log('getFetch');
+    fetch(path, {
+      headers: {'Content-Type':'application/json'},
       method: 'GET',
     })
     .then(function(response){
-      console.log('response:', response);
+      //console.log('response:', response);
       return response.json(); 
     })
     .then(function(data){
-      console.log('success:', data);
-      if(data.error){
-        document.getElementById("msg1").innerHTML = data.error;
-        return console.log('data.error', data.error);
-      }
-      document.getElementById("msg1").innerHTML = 'on'; 
-    })
-    .catch(function(error){
-      if(error){ 
-        console.log('error:', error);
-      }
-    })
-  }
-
-  function deviceOff(){
-    console.log('deviceOff');
-    fetch("/device-off", {
-      method: 'GET',
-    })
-    .then(function(response){
-      console.log('response:', response);
-      return response.json();
-    })
-    .then(function(data){
-      console.log('success:', data);
-      if(data.error){
-        console.log('data.error', data.error);
-        return document.getElementById("msg1").innerHTML = data.error;
-      }
-      document.getElementById("msg1").innerHTML = 'off'; 
-    })
-    .catch(function(error){
-      if(error){ 
-        console.log('error:', error);
-      }
-    })
-  }
-
-  function deviceToggle(){
-    console.log('deviceToggle');
-    var msg = "msg2";
-    fetch("/device-toggle", {
-      headers: {'Content-Type':'application/json'},
-      method: 'POST',
-      body: JSON.stringify(remoteDevice),
-    })
-    .then(function(response){
-      console.log('response:', response);
-      return response.json();
-    })
-    .then(function(data){
-      console.log('success:', data);
+      //console.log('success:', data);
       if(data.error){
         console.log('data.error', data.error);
         return document.getElementById(msg).innerHTML = data.error;
       }
-      if(data.status === true){
-        document.getElementById(msg).innerHTML = data.status; // true or on 
-        remoteDevice.state = false;
+      if(cb){
+        return cb(data);
       }
-      else{
-        document.getElementById(msg).innerHTML = data.status; // false or off
-        remoteDevice.state = true;
-      }
+      document.getElementById(msg).innerHTML = data.status; 
     })
     .catch(function(error){
       if(error){ 
         console.log('error:', error);
       }
     })
+  }
+
+  function postFetch(path, body, msg, cb){
+    console.log('postFetch');
+    fetch(path, {
+      headers: {'Content-Type':'application/json'},
+      method: 'POST',
+      body: JSON.stringify(body),
+    })
+    .then(function(response){
+      //console.log('response:', response);
+      return response.json();
+    })
+    .then(function(data){
+      //console.log('success:', data);
+      if(data.error){
+        console.log('data.error', data.error);
+        return document.getElementById(msg).innerHTML = data.error;
+      }
+      if(cb){
+        return cb(data);
+      }
+      document.getElementById(msg).innerHTML = data.value; 
+    })
+    .catch(function(error){
+      if(error){ 
+        console.log('error:', error);
+      }
+    })
+  }
+
+  function deviceOn(){
+    console.log('deviceOn');
+    getFetch('/device-on', 'msg1');
+  }
+
+  function deviceOff(){
+    console.log('deviceOff');
+    getFetch('/device-off', 'msg1');
+  }
+
+  function deviceToggle(){
+    postFetch('/device-toggle', remoteDevice, 'msg2', function (data){
+      if(data.status === true){
+        document.getElementById('msg2').innerHTML = data.status; // true or on 
+        remoteDevice.state = false;
+      }
+      else{
+        document.getElementById('msg2').innerHTML = data.status; // false or off
+        remoteDevice.state = true;
+      }
+    });
   }
 
   function deviceControl(sel){
@@ -294,91 +291,35 @@
       device = device2;
       msg = 'msg4';
     }
-    fetch("/device-control", {
-      headers: {'Content-Type':'application/json'},
-      method: 'POST',
-      body: JSON.stringify(device),
-    })
-    .then(function(response){
-      console.log('response:', response);
-      return response.json();
-    })
-    .then(function(data){
-      console.log('success:', data);
-      if(data.error){
-        console.log('data.error', data.error);
-        return document.getElementById(msg).innerHTML = data.error;
-      }
-
+    postFetch('/device-control', device, null, function (data){
       if(data.status === true){
-        document.getElementById(msg).innerHTML = 'on'; //data.status; 
+        document.getElementById(msg).innerHTML = data.status; // true or on 
         device.state = false;
       }
       else{
-        document.getElementById(msg).innerHTML = 'off'; //data.status; 
+        document.getElementById(msg).innerHTML = data.status; // false or off
         device.state = true;
       }
-    })
-    .catch(function(error){
-      if(error){ 
-        console.log('error:', error);
-      }
-    })
+    });
   }
 
   function getData(){
     console.log('getData');
-    fetch("/get-data", {
-      method: 'GET',
-    })
-    .then(function(response){
-      console.log('response:', response);
-      return response.json();
-    })
-    .then(function(data){
-      console.log('success:', data);
-      if(data.error){
-        console.log('data.error', data.error);
-        return document.getElementById("msg5").innerHTML = data.error;
-      }
-      document.getElementById("msg5").innerHTML = data.value; 
-    })
-    .catch(function(error){
-      if(error){ 
-        console.log('error:', error);
-      }
-    })
+    getFetch('/get-data', 'msg5', function (data){
+      document.getElementById('msg5').innerHTML = data.value; 
+    });
   }
 
   function sendData(){
     console.log('sendData');
     var inputValue = null;
-    if(document.getElementById("input-value")){
-      inputValue = document.getElementById("input-value").value;
+    if(document.getElementById("send-input-value")){
+      inputValue = document.getElementById("send-input-value").value;
     }
-    console.log('inputValue', inputValue );
-    fetch("/send-data", {
-      headers: {'Content-Type':'application/json'},
-      method: 'POST',
-      body: JSON.stringify({value:inputValue}),
-    })
-    .then(function(response){
-      console.log('response:', response);
-      return response.json(); 
-    })
-    .then(function(data){
-      console.log('success:', data);
-      if(data.error){
-        console.log('data.error', data.error);
-        return document.getElementById("msg6").innerHTML = data.error;
-      }
+
+    postFetch('/send-data', {value:inputValue}, 'msg6', function (data){
       document.getElementById("msg6").innerHTML = data.value; 
-    })
-    .catch(function(error){
-      if(error){ 
-        console.log('error:', error);
-      }
-    })
+    });
   }
 
   </script>
