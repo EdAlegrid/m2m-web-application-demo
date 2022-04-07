@@ -9,7 +9,7 @@ The demo consists of a simple front-end setup using fetch() and a back-end serve
 
 The back-end server can be hosted from any platform - Linux, Windows or Mac. The server acting as *m2m* client will then access and communicate with the remote devices - *device1* and *device2* which are running on their own independent processes.
 
-The remote devices ideally should be a Raspberry Pi device for this demo. However, if their are not available, you can just use any computers - Linux or Windows instead.
+For this demo, ideally the remote devices should be Raspberry Pi devices. However, if they are not available, you can just use any computers - Linux or Windows instead.
 
 ## Option1 - Remote Devices Setup using Raspberry Pi with Led Actuator
 On both devices, install an led actuator on pin 33 and 35.
