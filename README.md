@@ -1,13 +1,13 @@
-# m2m web-application demo
+# m2m web-application demo using the fetch api
 
 ![](https://raw.githubusercontent.com/EdoLabs/src2/master/quicktour4.svg?sanitize=true)
 [](quicktour.svg)
 
-This is a quick demo on how to integrate *m2m* into your http web application project.
+This is a quick demo on how to integrate *m2m* into your web application project.
 
-The demo consists of a simple front-end setup using fetch() and a back-end server using node and express.
+The demo consists of a simple front-end setup using the fetch() api to fetch resources asynchronously from the back-end server using node and express.
 
-The back-end server can be hosted from any platform - Linux, Windows or Mac. The server acting as *m2m* client will then access and communicate with the remote devices - *device1* and *device2* which are running on their own independent processes.
+The back-end server can be hosted from any platform - Linux, Windows or Mac. The server will then access and communicate with the remote devices - *device1* and *device2* acting as *m2m* client which are running on their own independent processes.
 
 For this demo, ideally the remote devices should be Raspberry Pi devices. However, if they are not available, you can just use any computers - Linux or Windows instead.
 
