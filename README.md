@@ -5,9 +5,9 @@
 
 This is a quick demo on how to integrate *m2m* into your web application project.
 
-The demo consists of a simple front-end setup using the fetch() api to fetch resources asynchronously from the back-end server using node and express.
+The demo consists of a simple front-end setup using fetch() method to fetch resources asynchronously from the back-end server using node and express.
 
-The back-end server can be hosted from any platform - Linux, Windows or Mac. The server will then access and communicate with the remote devices - *device1* and *device2* acting as *m2m* client which are running on their own independent processes.
+The back-end server can be hosted from any platform - Linux, Windows or Mac. The server using an *m2m* client will then communicate and access resources from the remote devices - *device1* and *device2* which are running on their own independent processes.
 
 For this demo, ideally the remote devices should be Raspberry Pi devices. However, if they are not available, you can just use any computers - Linux or Windows instead.
 
