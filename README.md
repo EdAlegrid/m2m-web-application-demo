@@ -1,7 +1,7 @@
 # Web application demo using the fetch api
 
-[](assets/webApplicationDemoFetchApi.svg)
-![](https://raw.githubusercontent.com/EdoLabs/src2/master/quicktour4.svg?sanitize=true)
+![](assets/webApplicationDemoFetchApi.svg)
+[](https://raw.githubusercontent.com/EdoLabs/src2/master/quicktour4.svg?sanitize=true)
 
 This is a quick demo on how to integrate *m2m* into your web application project.
 
