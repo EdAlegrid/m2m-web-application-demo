@@ -1,4 +1,4 @@
-# Web application demo using the fetch api
+# Web Application Demo Using the Fetch API
 
 ![](assets/webApplicationDemoFetchApi.svg)
 [](https://raw.githubusercontent.com/EdoLabs/src2/master/quicktour4.svg?sanitize=true)
