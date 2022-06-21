@@ -11,15 +11,18 @@ The back-end server can be hosted from any platform - Linux, Windows or Mac. The
 
 For this demo, ideally the remote devices should be Raspberry Pi devices. However, if they are not available, you can just use any computers - Linux or Windows instead.
 
-## Option1 - Remote Devices Setup using Raspberry Pi with Led Actuator
-On both devices, install an led actuator on pin 33 and 35.
-Remote Device1
+<br>
 
-##### 1. Create a device project directory and install m2m and array-gpio inside the directory.
+## Option1 - Using a Raspberry Pi with an led actuator
+On both devices, install an led actuator on pin 33 and 35.
+
+#### Remote Device1
+
+##### 1. Create a device project directory and install *m2m* and *array-gpio*.
 ```js
 $ npm install m2m array-gpio
 ```
-##### 2. Save the code below as device.js in your device project directory.
+##### 2. Save the code below as *device.js* in your device project directory.
 
 ```js
 const { Device } = require('m2m');
@@ -32,9 +35,8 @@ device.connect('https://dev.node-m2m.com', () => {
 
   device.setGpio({mode:'output', pin:[33, 35]});
 
-  device.setData('get-data', (data) => {
-    data.send(myData);
-  });
+  device.setGpio({mode:'input', pin:[11, 13]}, (gpio) => console.log('input pin', gpio.pin, 'state', gpio.state));
+  device.setGpio({mode:'output', pin:[33, 35]}, (gpio) => console.log('output pin', gpio.pin, 'state', gpio.state));
 
   device.setData('send-data', (data) => {
     if(data.payload){
@@ -53,11 +55,11 @@ $ node device.js
 ```
 #### Remote Device2
 
-##### 1. Create a device project directory and install m2m and array-gpio inside the directory.
+##### 1. Create a device project directory and install *m2m* and *array-gpio*.
 ```js
 $ npm install m2m array-gpio
 ```
-##### 2. Save the code below as device.js in your device project directory.
+##### 2. Save the code below as *device.js* in your device project directory.
 
 ```js
 const { Device } = require('m2m');
@@ -65,21 +67,34 @@ const { Device } = require('m2m');
 const device = new Device(200);
 
 device.connect('https://dev.node-m2m.com', () => {
-  device.setGpio({mode:'out', pin:[33, 35]}, gpio => console.log(gpio.pin, gpio.state));
+  device.setGpio({mode:'output', pin:[33, 35]}, (gpio) => console.log('output pin', gpio.pin, 'state', gpio.state));
+  
+  device.setData('random-number', (data) => {
+    let r = Math.floor(Math.random() * 100) + 25;
+    data.send(r);
+    console.log('random', r);
+  });
+
+  // error listener
+  device.on('error', (err) => console.log('error:', err));
+  
 });
 ```
 ##### 3. Start your device application.
 ```js
 $ node device.js
 ```
-## Option2 - Remote Devices Setup using Windows or Linux
+<br>
+
+## Option2 - Using Windows or Linux for remote devices
 #### Remote Device1
-##### Here, we don't need to install array-gpio instead the gpio output will run in simulation mode.
-##### 1. Create a device project directory and install m2m inside the directory.
+Here, you don't need to install array-gpio instead the gpio output will run in simulation mode.
+
+##### 1. Create a device project directory and install *m2m*.
 ```js
 $ npm install m2m
 ```
-##### 2. Save the code below as device.js in your device project directory.
+##### 2. Save the code below as *device.js* in your device project directory.
 
 ```js
 const { Device } = require('m2m');
@@ -90,7 +105,7 @@ let myData = 'myData';
 
 device.connect('https://dev.node-m2m.com', () => {
 
-  device.setGpio({mode:'output', pin:[33, 35], type:'simulation'});
+  device.setGpio({mode:'output', pin:[33, 35], type:'simulation'}, (gpio) => console.log('output pin', gpio.pin, 'state', gpio.state));
 
   device.setData('get-data', (data) => {
     data.send(myData);
@@ -113,11 +128,11 @@ $ node device.js
 ```
 #### Remote Device2
 
-##### 1. Create a device project directory and install m2m inside the directory.
+##### 1. Create a device project directory and install *m2m*.
 ```js
 $ npm install m2m
 ```
-##### 2. Save the code below as device.js in your device project directory.
+##### 2. Save the code below as *device.js* in your device project directory.
 
 ```js
 const { Device } = require('m2m');
@@ -126,7 +141,18 @@ const device = new Device(200);
 
 device.connect('https://dev.node-m2m.com', () => {
   device.setGpio({mode:'out', pin:[33, 35], type:'simulation'}, gpio => console.log(gpio.pin, gpio.state));
+  
+  device.setData('random-number', (data) => {
+    let r = Math.floor(Math.random() * 100) + 25;
+    data.send(r);
+    console.log('random', r);
+  });
+
+  // error listener
+  device.on('error', (err) => console.log('error:', err));
+  
 });
+
 ```
 ##### 3. Start your device application.
 ```js
