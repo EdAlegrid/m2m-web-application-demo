@@ -31,7 +31,7 @@ let device = new Device(100);
 
 let myData = 'myData';
 
-device.connect('https://dev.node-m2m.com', () => {
+device.connect('https://www.node-m2m.com', () => {
 
   device.setGpio({mode:'output', pin:[33, 35]});
 
@@ -66,7 +66,7 @@ const { Device } = require('m2m');
 
 const device = new Device(200);
 
-device.connect('https://dev.node-m2m.com', () => {
+device.connect('https://www.node-m2m.com', () => {
   device.setGpio({mode:'output', pin:[33, 35]}, (gpio) => console.log('output pin', gpio.pin, 'state', gpio.state));
   
   device.setData('random-number', (data) => {
@@ -103,7 +103,7 @@ let device = new Device(100);
 
 let myData = 'myData';
 
-device.connect('https://dev.node-m2m.com', () => {
+device.connect('https://www.node-m2m.com', () => {
 
   device.setGpio({mode:'output', pin:[33, 35], type:'simulation'}, (gpio) => console.log('output pin', gpio.pin, 'state', gpio.state));
 
@@ -139,7 +139,7 @@ const { Device } = require('m2m');
 
 const device = new Device(200);
 
-device.connect('https://dev.node-m2m.com', () => {
+device.connect('https://www.node-m2m.com', () => {
   device.setGpio({mode:'out', pin:[33, 35], type:'simulation'}, gpio => console.log(gpio.pin, gpio.state));
   
   device.setData('random-number', (data) => {
