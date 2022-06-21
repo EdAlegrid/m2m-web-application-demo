@@ -154,3 +154,7 @@ $ node app
 `http://127.0.0.1:4000`
 
 The web application page should show the various sections with control buttons to try out how *m2m* communicates with the remote devices to control gpio outputs and access data.
+
+![](assets/browserClientDemo.svg)
+
+
